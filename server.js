@@ -34,7 +34,6 @@ app.use(genericErrorHandler);
 
 
 
-
 const PORT = process.env.PORT || 4000
 const mongo_uri =  process.env.MONGO_URI
 console.log(mongo_uri)

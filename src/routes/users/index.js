@@ -53,6 +53,25 @@ usersRouter.post("/register", async (req, res, next) => {
     }
 });
 
+// login user
+usersRouter.post("/login", async (req, res, next) => {
+    const { email, password } = req.body
+    //check for user email
+    const user = await UserModel.findOne({ email })
+    // if the user is found, compare its password from req.body with the harsed password before returning the token
+    if (user && (await bcrypt.compare(password, user.password))) {
+        res.json({
+            _id: user.id,
+            name: user.name,
+            email: user.email,
+            token: generateToken(user._id)
+
+        })
+    } else {
+        res.status(400).send('invalid user data')
+    }
+})
+
 
 
 
@@ -71,9 +90,9 @@ usersRouter.get("/", (req, res, next) => {
 })
 
 // generate token
-const generateToken = (id)=>{
-    return jwt.sign({id}, process.env.jwt_secret, {
-        expiresIn:'30d'
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.jwt_secret, {
+        expiresIn: '30d'
     })
 }
 
